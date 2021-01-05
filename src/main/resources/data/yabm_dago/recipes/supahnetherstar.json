@@ -1,0 +1,19 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"exe",
+		"xxx",
+		"exe"
+	],
+	"key":{
+		"x":{
+			"item":"minecraft:nether_star"
+		},
+		"e":{
+			"item":"minecraft:end_crystal"
+		}
+	},
+	"result":{
+		"item":"yabm_dago:supahnetherstar"
+	}
+}

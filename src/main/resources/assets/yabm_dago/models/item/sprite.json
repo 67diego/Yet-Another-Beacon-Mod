@@ -1,0 +1,42 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"yabm_dago:item/sprite"
+	},
+   
+    "overrides":[
+	 {"predicate": {"custom_model_data":0}, "model":"yabm_dago:item/sprites/a"},
+     {"predicate": {"custom_model_data":1}, "model":"yabm_dago:item/sprites/b"},
+     {"predicate": {"custom_model_data":2}, "model":"yabm_dago:item/sprites/c"},
+	 {"predicate": {"custom_model_data":3}, "model":"yabm_dago:item/sprites/d"},
+     {"predicate": {"custom_model_data":4}, "model":"yabm_dago:item/sprites/e"},
+	 {"predicate": {"custom_model_data":5}, "model":"yabm_dago:item/sprites/f"},
+     {"predicate": {"custom_model_data":6}, "model":"yabm_dago:item/sprites/g"},
+	 {"predicate": {"custom_model_data":7}, "model":"yabm_dago:item/sprites/h"},
+     {"predicate": {"custom_model_data":8}, "model":"yabm_dago:item/sprites/i"},
+	 {"predicate": {"custom_model_data":9}, "model":"yabm_dago:item/sprites/j"},
+     {"predicate": {"custom_model_data":10}, "model":"yabm_dago:item/sprites/k"},
+	 {"predicate": {"custom_model_data":11}, "model":"yabm_dago:item/sprites/l"},
+     {"predicate": {"custom_model_data":12}, "model":"yabm_dago:item/sprites/m"},
+	 {"predicate": {"custom_model_data":13}, "model":"yabm_dago:item/sprites/n"},
+     {"predicate": {"custom_model_data":14}, "model":"yabm_dago:item/sprites/o"},
+	 {"predicate": {"custom_model_data":15}, "model":"yabm_dago:item/sprites/p"},
+     {"predicate": {"custom_model_data":16}, "model":"yabm_dago:item/sprites/q"},
+	 {"predicate": {"custom_model_data":17}, "model":"yabm_dago:item/sprites/r"},
+     {"predicate": {"custom_model_data":18}, "model":"yabm_dago:item/sprites/s"},
+	 {"predicate": {"custom_model_data":19}, "model":"yabm_dago:item/sprites/t"},
+     {"predicate": {"custom_model_data":20}, "model":"yabm_dago:item/sprites/u"},
+	 {"predicate": {"custom_model_data":21}, "model":"yabm_dago:item/sprites/v"},
+     {"predicate": {"custom_model_data":22}, "model":"yabm_dago:item/sprites/w"},
+	 {"predicate": {"custom_model_data":23}, "model":"yabm_dago:item/sprites/x"},
+     {"predicate": {"custom_model_data":24}, "model":"yabm_dago:item/sprites/y"},
+	 {"predicate": {"custom_model_data":25}, "model":"yabm_dago:item/sprites/z"},
+     {"predicate": {"custom_model_data":26}, "model":"yabm_dago:item/sprites/aa"},
+	 {"predicate": {"custom_model_data":27}, "model":"yabm_dago:item/sprites/ab"},
+     {"predicate": {"custom_model_data":28}, "model":"yabm_dago:item/sprites/ac"},
+	 {"predicate": {"custom_model_data":29}, "model":"yabm_dago:item/sprites/ad"},
+     {"predicate": {"custom_model_data":30}, "model":"yabm_dago:item/sprites/ae"},
+	 {"predicate": {"custom_model_data":31}, "model":"yabm_dago:item/sprites/af"},
+     {"predicate": {"custom_model_data":32}, "model":"yabm_dago:item/sprites/ag"}
+    ]
+}

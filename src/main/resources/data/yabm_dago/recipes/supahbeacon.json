@@ -1,0 +1,22 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"xxx",
+		"xwx",
+		"ooo"
+	],
+	"key":{
+		"o":{
+			"item":"minecraft:obsidian"
+		},
+		"w":{
+			"item":"yabm_dago:supahnetherstar"
+		},
+		"x":{
+			"item":"minecraft:glass"
+		}
+	},
+	"result":{
+		"item":"yabm_dago:supahbeacon"
+	}
+}

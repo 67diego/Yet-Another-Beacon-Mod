@@ -1,5 +1,6 @@
 # eclipse
 bin
+logs
 *.launch
 .settings
 .metadata
@@ -20,6 +21,10 @@ build
 # other
 eclipse
 run
+.gitattributes
+Build.bat
+gradlew.bat
+runClient.bat
 
 # Files from Forge MDK
 forge*changelog.txt

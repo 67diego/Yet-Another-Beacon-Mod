@@ -20,6 +20,8 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tags.BlockTags;
@@ -35,8 +37,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -46,12 +46,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 @SuppressWarnings("unchecked")
 public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, INamedContainerProvider{
-	private static final int[]badEffects= {2,4,7,9,15,17,18,19,20,25,27};
 	private LazyOptional<IItemHandler> handler = LazyOptional.of(this::createHandler);
 	public BeamSegment mem;
     private int levels=0;
     public int act=0,plays=2,passis=0,hostis=1;//NONE,BAD,GOOD,ALL
-	public int[] effs={0,0,0,0,0};
+	public int[] effs;
 	IIntArray iarr=new IIntArray() {
 		public int size() {return 8;}
 		
@@ -70,6 +69,7 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	
 	public SupahBeaconTile() {
 		super(Regs.SUPAHBEACONTILE.get());
+		this.effs = Effect.get(0)==null?new int[]{0,0,0,0,0} : new int[]{-1,-1,-1,-1,-1};
 	}
 	
 	private IItemHandler createHandler() {
@@ -120,65 +120,46 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	    	this.mem=new BeamSegment(cols);
 	    	if(this.levels<4) this.mem=null;
 	    }
-		if(!this.world.isRemote&&this.act==1&&this.levels>=4) {
+		if(!this.world.isRemote()&&this.act==1&&this.levels>=4) {
 	        handler.ifPresent(h -> {
 	        	this.act=2;
 	        	h.extractItem(0, 1, false);
 	            markDirty();
 	        });
 	        this.act=this.act<2?0:2;
+	        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 3);
 		}
 	}
 
 	private void addEffectsToPlayers() {
-		if (!this.world.isRemote&&this.levels >= 4) {
+		if (this.levels >= 4) {
 			double d0 = Config.BEACONRANGE.get();
 			AxisAlignedBB axisalignedbb = (new AxisAlignedBB(this.pos)).grow(d0);
 			List<LivingEntity> list = this.world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
 			for(LivingEntity pla : list) {
 				for(int i=0;i<5;i++) {
-					if(this.effs[i]==0)continue;
-					boolean goodEffect=true;
-					for(Integer in:badEffects)
-						if(effs[i]==in) {goodEffect=false;break;}
+					Effect effect = Effect.get(this.effs[i]);
+					if(effect == null) continue;
+					boolean goodEffect = effect.isBeneficial();
+					boolean shouldApply = false;
 					if(pla instanceof PlayerEntity) {
-						switch(this.plays) {
-						default:break;
-						case 2:
-							if(goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 1:
-							if(!goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 3:
-							pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						}
+						if((this.plays == 2 && goodEffect)||(this.plays == 1 && !goodEffect)||this.plays == 3)
+							shouldApply = true;
 					}else if(isBad(pla)) {
-						switch(this.hostis) {
-						default:break;
-						case 2:
-							if(goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 1:
-							if(!goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 3:
-							pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						}
+						if((this.hostis == 2 && goodEffect)||(this.hostis == 1 && !goodEffect)||this.hostis == 3)
+							shouldApply = true;
 					}else {
-						switch(this.passis) {
-						default:break;
-						case 2:
-							if(goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 1:
-							if(!goodEffect)pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
-						case 3:
-							pla.addPotionEffect(new EffectInstance(Effect.get(this.effs[i]), 320, Config.EFFECTPAWA.get()-1, true, true));
-							break;
+						if((this.passis == 2 && goodEffect)||(this.passis == 1 && !goodEffect)||this.passis == 3)
+							shouldApply = true;
+					}
+					if(shouldApply) {
+						EffectInstance newEffectInstance = new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true);
+						if(pla.getActivePotionEffect(effect)==null)
+							pla.addPotionEffect(new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true));
+						else { //if(pla.isPotionApplicable(newEffectInstance))
+							EffectInstance effectInstance = pla.getActivePotionEffect(effect);
+							//net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionAddedEvent(pla, effectInstance, newEffectInstance));
+							effectInstance.combine(newEffectInstance);
 						}
 					}
 				}
@@ -228,7 +209,6 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	}
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public double getMaxRenderDistanceSquared() {
         return 65536.0D;
     }
@@ -274,6 +254,22 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
         super.write(tag);
         return tag;
     }
+	
+	@Override
+	public SUpdateTileEntityPacket getUpdatePacket(){
+		CompoundNBT tag = new CompoundNBT();
+		tag.putInt("act", this.act);
+		tag.putIntArray("effs", this.effs);
+		SUpdateTileEntityPacket updatePacket = new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return updatePacket;
+	}
+	
+	@Override
+	public void onDataPacket(NetworkManager net,SUpdateTileEntityPacket pkt){
+		CompoundNBT nbt = pkt.getNbtCompound();
+		this.act=nbt.getInt("act");
+		this.effs=nbt.getIntArray("effs");
+	}
 
     public static class BeamSegment {
     	final ArrayList<float[]> cols;

@@ -23,7 +23,6 @@ public class Regs {
 	public static final DeferredRegister<ContainerType<?>> CONTS=DeferredRegister.create(ForgeRegistries.CONTAINERS, Moduno.modid);
 	
 	public static final RegistryObject<Item> SUPAHNETHERSTAR = ITEMS.register("supahnetherstar", ()->{return new Item(new Item.Properties().rarity(Rarity.EPIC).group(ItemGroup.MISC));});
-	public static final RegistryObject<Item> SPRITE = ITEMS.register("sprite", ()->{return new Item(new Item.Properties());});
 	
 	public static final RegistryObject<Block> SUPAHBEACONBLOCK = BLOCKS.register("supahbeacon", ()->{return new SupahBeacon();});
 	

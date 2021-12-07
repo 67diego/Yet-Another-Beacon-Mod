@@ -57,16 +57,16 @@ public class SBCont extends Container{
 		this.woca=worldPosCallable;
 		this.pos=pos.getPos();
 		pos.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(h->{
-			this.addSlot(new SlotItemHandler(h, 0, 81, 84));
+			this.addSlot(new SlotItemHandler(h, 0, 80, 84));
 		});
 		this.trackIntArray(iarr);
      	for(int k = 0; k < 3; ++k) {
      		for(int l = 0; l < 9; ++l) {
-     			this.addSlot(new Slot(plinv, l + k * 9 + 9, 9 + l * 18, 111 + k * 18));
+     			this.addSlot(new Slot(plinv, l + k * 9 + 9, 8 + l * 18, 111 + k * 18));
          	}
      	}
      	for(int i1 = 0; i1 < 9; ++i1) {
-     		this.addSlot(new Slot(plinv, i1, 9 + i1 * 18, 169));
+     		this.addSlot(new Slot(plinv, i1, 8 + i1 * 18, 169));
      	}
 	}
 	
@@ -101,7 +101,7 @@ public class SBCont extends Container{
 	    		  if (!this.mergeItemStack(stack, 1, 37, true)) return ItemStack.EMPTY;
 	    		  slot.onSlotChange(stack, itemstack);
 	    	  }else {
-    			  if(stack.getCount()>1&&this.inventorySlots.get(0).getStack().getCount()<1) {
+    			  if(stack.getCount()>0&&this.inventorySlots.get(0).getStack().getCount()<1) {
     				  this.mergeItemStack(stack.getItem().getDefaultInstance(), 0, 1, false);
     				  slot.putStack(stack.split(stack.getCount()-1));
     				  return ItemStack.EMPTY;

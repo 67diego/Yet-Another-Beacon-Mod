@@ -106,7 +106,10 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 		    	f=true;
 				if(act==2) addEffectsToPlayers();
 		    }
-		    if(!f1&&f) this.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE);
+		    if(!f1&&f) {
+		    	this.playSound(SoundEvents.BLOCK_BEACON_ACTIVATE);
+		    	if(!this.world.isRemote()) this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
+		    }
 		    else if(f1&&!f) this.playSound(SoundEvents.BLOCK_BEACON_DEACTIVATE);
 	    }
 	    if (this.world.getGameTime() % 40L == 0L) {
@@ -127,7 +130,7 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	            markDirty();
 	        });
 	        this.act=this.act<2?0:2;
-	        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 3);
+	        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
 		}
 	}
 
@@ -260,8 +263,10 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 		CompoundNBT tag = new CompoundNBT();
 		tag.putInt("act", this.act);
 		tag.putIntArray("effs", this.effs);
-		SUpdateTileEntityPacket updatePacket = new SUpdateTileEntityPacket(getPos(), 0, tag);
-		return updatePacket;
+        tag.putInt("plays",plays);
+        tag.putInt("passis",passis);
+        tag.putInt("hostis",hostis);
+		return new SUpdateTileEntityPacket(getPos(), 0, tag);
 	}
 	
 	@Override
@@ -269,6 +274,9 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 		CompoundNBT nbt = pkt.getNbtCompound();
 		this.act=nbt.getInt("act");
 		this.effs=nbt.getIntArray("effs");
+		this.plays=nbt.getInt("plays");
+		this.passis=nbt.getInt("passis");
+		this.hostis=nbt.getInt("hostis");
 	}
 
     public static class BeamSegment {

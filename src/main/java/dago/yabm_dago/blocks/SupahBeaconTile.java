@@ -137,7 +137,7 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	private void addEffectsToPlayers() {
 		if (this.levels >= 4) {
 			double d0 = Config.BEACONRANGE.get();
-			AxisAlignedBB axisalignedbb = (new AxisAlignedBB(this.pos)).grow(d0);
+			AxisAlignedBB axisalignedbb = (new AxisAlignedBB(this.pos)).grow(d0).expand(0.0D, (double)this.world.getHeight(), 0.0D);
 			List<LivingEntity> list = this.world.getEntitiesWithinAABB(LivingEntity.class, axisalignedbb);
 			for(LivingEntity pla : list) {
 				for(int i=0;i<5;i++) {

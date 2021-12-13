@@ -130,7 +130,6 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 	            markDirty();
 	        });
 	        this.act=this.act<2?0:2;
-	        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
 		}
 	}
 
@@ -157,9 +156,10 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 					}
 					if(shouldApply) {
 						EffectInstance newEffectInstance = new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true);
-						if(pla.getActivePotionEffect(effect)==null)
+						if(pla.getActivePotionEffect(effect)==null) {
 							pla.addPotionEffect(new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true));
-						else { //if(pla.isPotionApplicable(newEffectInstance))
+					        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
+						}else { //if(pla.isPotionApplicable(newEffectInstance))
 							EffectInstance effectInstance = pla.getActivePotionEffect(effect);
 							//net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionAddedEvent(pla, effectInstance, newEffectInstance));
 							effectInstance.combine(newEffectInstance);
@@ -229,54 +229,42 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 		return new SBCont(id, plinv, this.iarr, IWorldPosCallable.of(this.world, this.getPos()), this);
     }
 	
-	@Override
+    @Override
 	public void read(BlockState state, CompoundNBT tag) {
-        CompoundNBT invTag = tag.getCompound("inv");
-        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(invTag));
+		super.read(state, tag);
+        handler.ifPresent(h -> ((INBTSerializable<CompoundNBT>) h).deserializeNBT(tag.getCompound("inv")));
         this.effs = tag.getIntArray("effs");
-        for(int i=0;i<this.effs.length;i++)
-        	this.iarr.set(i, this.effs[i]);
         this.act=tag.getInt("act");
         this.plays=tag.getInt("plays");
         this.passis=tag.getInt("passis");
         this.hostis=tag.getInt("hostis");
-		super.read(state, tag);
 	}
 
 	@Override
     public CompoundNBT write(CompoundNBT tag) {
-        handler.ifPresent(h -> {
-            CompoundNBT compound = ((INBTSerializable<CompoundNBT>) h).serializeNBT();
-            tag.put("inv", compound);
-        });
-        tag.putIntArray("effs", effs);
+		super.write(tag);
+        handler.ifPresent(h -> tag.put("inv", ((INBTSerializable<CompoundNBT>) h).serializeNBT()));
         tag.putInt("act",act);
+        tag.putIntArray("effs", effs);
         tag.putInt("plays",plays);
         tag.putInt("passis",passis);
         tag.putInt("hostis",hostis);
-        super.write(tag);
         return tag;
     }
 	
 	@Override
+	public CompoundNBT getUpdateTag(){
+		return this.write(new CompoundNBT());
+	}
+	
+	@Override
 	public SUpdateTileEntityPacket getUpdatePacket(){
-		CompoundNBT tag = new CompoundNBT();
-		tag.putInt("act", this.act);
-		tag.putIntArray("effs", this.effs);
-        tag.putInt("plays",plays);
-        tag.putInt("passis",passis);
-        tag.putInt("hostis",hostis);
-		return new SUpdateTileEntityPacket(getPos(), 0, tag);
+		return new SUpdateTileEntityPacket(getPos(), 0, this.getUpdateTag());
 	}
 	
 	@Override
 	public void onDataPacket(NetworkManager net,SUpdateTileEntityPacket pkt){
-		CompoundNBT nbt = pkt.getNbtCompound();
-		this.act=nbt.getInt("act");
-		this.effs=nbt.getIntArray("effs");
-		this.plays=nbt.getInt("plays");
-		this.passis=nbt.getInt("passis");
-		this.hostis=nbt.getInt("hostis");
+		this.read(getBlockState(), pkt.getNbtCompound());
 	}
 
     public static class BeamSegment {

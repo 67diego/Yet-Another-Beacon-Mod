@@ -156,14 +156,7 @@ public class SupahBeaconTile extends TileEntity implements ITickableTileEntity, 
 					}
 					if(shouldApply) {
 						EffectInstance newEffectInstance = new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true);
-						if(pla.getActivePotionEffect(effect)==null) {
-							pla.addPotionEffect(new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true));
-					        this.world.notifyBlockUpdate(getPos(), getBlockState(), getBlockState(), 2);
-						}else { //if(pla.isPotionApplicable(newEffectInstance))
-							EffectInstance effectInstance = pla.getActivePotionEffect(effect);
-							//net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.living.PotionEvent.PotionAddedEvent(pla, effectInstance, newEffectInstance));
-							effectInstance.combine(newEffectInstance);
-						}
+						pla.addPotionEffect(new EffectInstance(effect, 320, Config.EFFECTPAWA.get()-1, true, true));
 					}
 				}
 			}

@@ -9,6 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class UpdateSBEffsPacket{
@@ -32,10 +33,13 @@ public class UpdateSBEffsPacket{
 	
 	public void handle(Supplier<NetworkEvent.Context> ctx) {
 		ctx.get().enqueueWork(()->{
-			TileEntity te=ctx.get().getSender().getServerWorld().getTileEntity(this.pos);
+			ServerWorld wo = ctx.get().getSender().getServerWorld();
+			TileEntity te=wo.getTileEntity(this.pos);
 			if(te instanceof SupahBeaconTile) {
 				((SupahBeaconTile) te).effs=this.effs;
 				((SupahBeaconTile) te).act=1;
+				te.markDirty();
+				wo.notifyBlockUpdate(pos, te.getBlockState(), te.getBlockState(), 2);
 				te.getWorld().playSound((PlayerEntity)null, te.getPos(), SoundEvents.BLOCK_BEACON_POWER_SELECT, SoundCategory.BLOCKS, 1, 1);
 			}
 		});

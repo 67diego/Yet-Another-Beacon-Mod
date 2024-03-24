@@ -1,7 +1,9 @@
 {
     "pack": {
         "description": "A new beacon (WARNING: might be too OP)",
-        "pack_format": 6,
         "_comment": "Another beacon mod?            Yes."
+        "pack_format": 9,
+        "forge:resource_pack_format": 9,
+        "forge:data_pack_format": 10
     }
 }

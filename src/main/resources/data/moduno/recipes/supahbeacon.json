@@ -1,0 +1,22 @@
+{
+	"type":"minecraft:crafting_shaped",
+	"pattern":[
+		"xxx",
+		"xwx",
+		"ooo"
+	],
+	"key":{
+		"o":{
+			"item":"minecraft:obsidian"
+		},
+		"w":{
+			"item":"moduno:supahnetherstar"
+		},
+		"x":{
+			"item":"minecraft:glass"
+		}
+	},
+	"result":{
+		"item":"moduno:supahbeacon"
+	}
+}

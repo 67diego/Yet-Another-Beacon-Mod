@@ -1,0 +1,17 @@
+{
+	"item.moduno.supahnetherstar":"Super nether star",
+	"block.moduno.supahbeacon":"Super beacon",
+	"item.moduno.supahbeacon":"Super beacon",
+	"item.moduno.sprite":"Effect",
+	"itemGroup.moduno":"Mod uno",
+	"itemGroup.supahbeacon":"Mod uno",
+	
+	"desc.moduno.apply_0":"Apply: none",
+	"desc.moduno.apply_1":"Apply: bad",
+	"desc.moduno.apply_2":"Apply: good",
+	"desc.moduno.apply_3":"Apply: all",
+	
+	"desc.moduno.players":"players",
+	"desc.moduno.passive":"passive",
+	"desc.moduno.hostile":"hostile"
+}

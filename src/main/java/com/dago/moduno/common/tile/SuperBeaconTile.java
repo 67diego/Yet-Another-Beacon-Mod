@@ -80,11 +80,13 @@ public class SuperBeaconTile extends BlockEntity implements MenuProvider{
 		int k = pos.getZ();
 
 		int j1 = tile.levels;
+		if(wo.getGameTime() % 4L == 0L && tile.levels > 3) {
+			updateBeamColors(wo, pos, tile);
+		}
 		if(wo.getGameTime() % 80L == 0L) {
 			tile.levels = updateBase(wo, i, j, k);
 
 			if(tile.levels > 3) {
-				updateBeamColors(wo, pos, tile);
 				BeaconBlockEntity.playSound(wo, pos, SoundEvents.BEACON_AMBIENT);
 				applyEffects(wo, pos, tile.levels, tile.effs);
 			}
